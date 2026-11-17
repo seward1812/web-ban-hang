@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coldpack - Hệ Thống Vận Chuyển & Kho Hàng</title>
+    <!-- FontAwesome cho icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* HEADER - Tone màu xanh da trời */
+        header {
+            background: linear-gradient(to bottom, #007bff, #0056b3);
+            color: white;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px;
+        }
+
+        .header-middle {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 40px;
+        }
+
+        .search-bar {
+            display: flex;
+            background: white;
+            padding: 3px;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            padding: 8px 12px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-bar button {
+            background: #0056b3;
+            border: none;
+            color: white;
+            padding: 0 20px;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .cart-container {
+            position: relative;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 5px;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background: white;
+            color: #007bff;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+        }
+
+        /* BANNER QUẢNG CÁO - Xanh dương */
+        .banner-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+        }
+
+        .main-banner {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            border-radius: 4px;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            color: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .banner-right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sub-banner {
+            background: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=500') center/cover;
+            border-radius: 4px;
+            height: 120px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .sub-banner-2 {
+            background: url('https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=500') center/cover;
+            border-radius: 4px;
+            height: 120px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        /* CONTAINER CHUNG */
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        /* THANH CHỌN MỤC ĐỒ */
+        .category-filter-bar {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 2px solid #007bff;
+            border-radius: 4px 4px 0 0;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            color: #007bff;
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* LƯỚI SẢN PHẨM */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 15px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid #eee;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .product-code {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .product-name {
+            font-size: 13px;
+            line-height: 1.3;
+            height: 34px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            font-weight: 600;
+        }
+
+        .product-category {
+            font-size: 11px;
+            color: #007bff;
+            background: #e7f1ff;
+            padding: 2px 6px;
+            border-radius: 2px;
+            width: fit-content;
+        }
+
+        .product-desc {
+            font-size: 11px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .product-price {
+            color: #007bff;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .product-unit {
+            font-size: 11px;
+            color: #777;
+        }
+
+        .btn-add-cart {
+            background: #e7f1ff;
+            color: #007bff;
+            border: 1px solid #007bff;
+            padding: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            width: 100%;
+            border-radius: 2px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .btn-add-cart:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        /* MODAL XE TẢI / ĐƠN HÀNG */
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cart-modal.active {
+            display: flex;
+        }
+
+        .cart-modal-content {
+            background: white;
+            width: 500px;
+            max-width: 90%;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            max-height: 80vh;
+        }
+
+        .cart-modal-header {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .cart-modal-close {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .cart-modal-body {
+            padding: 15px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .cart-item-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .cart-item-price {
+            font-size: 12px;
+            color: #007bff;
+        }
+
+        .cart-modal-footer {
+            padding: 15px;
+            background: #f9f9f9;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-checkout {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-checkout:hover {
+            background: #0056b3;
+        }
+
+        /* HIỆU ỨNG ẢNH BAY & TOAST */
+        .flying-item {
+            position: fixed;
+            z-index: 99999;
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            pointer-events: none;
+            transition: all 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        .custom-toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 100000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-truck-fast"></i> Coldpack
+        </div>
+        
+        <div class="header-middle">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm theo tên sản phẩm hoặc mã sản phẩm..." onkeyup="filterProducts()">
+                <button onclick="filterProducts()"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+        </div>
+
+        <!-- Biểu tượng Xe Tải thay cho giỏ hàng -->
+        <div class="cart-container" title="Danh sách xe vận chuyển" onclick="toggleCartModal()">
+            <i class="fa-solid fa-truck"></i>
+            <span class="cart-badge" id="cart-count">0</span>
+        </div>
+    </header>
+
+    <!-- Modal Danh Sách Vận Chuyển / Xe Tải -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-modal-content">
+            <div class="cart-modal-header">
+                <span><i class="fa-solid fa-truck-fast"></i> Đơn Hàng Đã Xếp Xe Tải</span>
+                <span class="cart-modal-close" onclick="toggleCartModal()">&times;</span>
+            </div>
+            <div class="cart-modal-body" id="cartModalBody"></div>
+            <div class="cart-modal-footer">
+                <div>Tổng số lượng: <strong id="cartModalTotalCount">0</strong> món</div>
+                <button class="btn-checkout" onclick="checkout()">Xác Nhận Xuất Kho</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner Quảng Cáo -->
+    <div class="banner-container">
+        <div class="main-banner">
+            <div>
+                <h1 style="font-size: 26px; margin-bottom: 8px;">COLDPACK LOGISTICS & KHO HÀNG</h1>
+                <p>Hệ thống vận chuyển chuyên nghiệp hơn 30+ mặt hàng chất lượng cao!</p>
+            </div>
+            <i class="fa-solid fa-truck-ramp-box fa-4x" style="opacity: 0.8;"></i>
+        </div>
+        <div class="banner-right-col">
+            <div class="sub-banner"></div>
+            <div class="sub-banner-2"></div>
+        </div>
+    </div>
+
+    <!-- Thanh Chọn Mục Đồ -->
+    <div class="container" style="margin-bottom: 10px;">
+        <div style="font-size: 13px; font-weight: bold; color: #666; margin-bottom: 8px;">CHỌN MỤC ĐỒ / DANH MỤC:</div>
+        <div class="category-filter-bar" id="categoryFilterBar"></div>
+    </div>
+
+    <!-- Danh Sách Sản Phẩm -->
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fa-solid fa-boxes-stacked" style="color: #007bff;"></i> KHO HÀNG CÔNG KHAI (<span id="product-count">0</span> sản phẩm)</h2>
+        </div>
+        
+        <div class="product-grid" id="productGrid"></div>
+    </div>
+
+    <script>
+        const products = [
+            { id: "SP01", name: "Tai Nghe Chụp Tai Bluetooth Studio Pro", desc: "Chống ồn chủ động, pin 40h", price: "350.000đ", rawPrice: 350000, unit: "Cái", category: "Đồ Điện Tử", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" },
+            { id: "SP02", name: "Đồng Hồ Smartwatch Amoled IP68", desc: "Theo dõi sức khỏe, kháng nước", price: "890.000đ", rawPrice: 890000, unit: "Chiếc", category: "Đồ Phụ Kiện", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" },
+            { id: "SP03", name: "Bàn Phím Cơ Gaming RGB 87 Phím", desc: "Switch cơ học siêu êm", price: "650.000đ", rawPrice: 650000, unit: "Bộ", category: "Đồ Công Nghệ", img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500" },
+            { id: "SP04", name: "Giày Thể Thao Sneaker Nam Nữ", desc: "Êm chân, thoáng khí", price: "420.000đ", rawPrice: 420000, unit: "Đôi", category: "Đồ Thời Trang", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" },
+            { id: "SP05", name: "Laptop Văn Phòng Core i5 Gen 11", desc: "Mỏng nhẹ, RAM 16GB", price: "11.500.000đ", rawPrice: 11500000, unit: "Máy", category: "Đồ Công Nghệ", img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500" },
+            { id: "SP06", name: "Chuột Không Dây Silent Chống Ồn", desc: "Độ phân giải 1600 DPI", price: "180.000đ", rawPrice: 180000, unit: "Cái", category: "Đồ Công Nghệ", img: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500" },
+            { id: "SP07", name: "Ba Lô Laptop Chống Thấm Nước", desc: "Ngăn chứa rộng rãi 15.6 inch", price: "290.000đ", rawPrice: 290000, unit: "Chiếc", category: "Đồ Thời Trang", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500" },
+            { id: "SP08", name: "Áo Khoác Dù Nam Nữ Thời Trang", desc: "Chống nắng, chống gió tốt", price: "250.000đ", rawPrice: 250000, unit: "Áo", category: "Đồ Thời Trang", img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500" },
+            { id: "SP09", name: "Quần Jeans Nam Slimfit Co Giãn", desc: "Vải jean cotton cao cấp", price: "320.000đ", rawPrice: 320000, unit: "Quần", category: "Đồ Thời Trang", img: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500" },
+            { id: "SP10", name: "Kính Mát Thời Trang Chống UV400", desc: "Gọng kim loại sang trọng", price: "199.000đ", rawPrice: 199000, unit: "Cái", category: "Đồ Phụ Kiện", img: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500" },
+            { id: "SP11", name: "Bình Giữ Nhiệt Inox 304 1000ml", desc: "Giữ nhiệt nóng lạnh 24h", price: "150.000đ", rawPrice: 150000, unit: "Bình", category: "Đồ Gia Dụng", img: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500" },
+            { id: "SP12", name: "Đèn bàn LED chống cận thị", desc: "Ánh sáng vàng/trắng bảo vệ mắt", price: "220.000đ", rawPrice: 220000, unit: "Đèn", category: "Đồ Gia Dụng", img: "https://images.unsplash.com/photo-1534349762230-e3cadf3fddcf?w=500" },
+            { id: "SP13", name: "Sữa Rửa Mặt Trà Xanh Ngừa Mụn", desc: "Làm sạch sâu, kiểm soát nhờn", price: "110.000đ", rawPrice: 110000, unit: "Tuýp", category: "Đồ Làm Đẹp", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500" },
+            { id: "SP14", name: "Kem Chống Nắng SPF50+ PA++++", desc: "Bảo vệ toàn diện, không nhờn rít", price: "210.000đ", rawPrice: 210000, unit: "Lọ", category: "Đồ Làm Đẹp", img: "https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=500" },
+            { id: "SP15", name: "Son Môi Lì Không Trôi Cao Cấp", desc: "Màu chuẩn, mềm mịn môi", price: "160.000đ", rawPrice: 160000, unit: "Thỏi", category: "Đồ Làm Đẹp", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=500" },
+            { id: "SP16", name: "Cáp Sạc Nhanh Type-C 3A", desc: "Độ bền cao, chiều dài 1m", price: "69.000đ", rawPrice: 69000, unit: "Sợi", category: "Đồ Phụ Kiện", img: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500" },
+            { id: "SP17", name: "Sạc Dự Phòng 10000mAh QuickCharge", desc: "Nhỏ gọn, sạc nhanh 22.5W", price: "310.000đ", rawPrice: 310000, unit: "Cục", category: "Đồ Phụ Kiện", img: "https://images.unsplash.com/photo-1609592424155-2309f302062b?w=500" },
+            { id: "SP18", name: "Loa Bluetooth Mini Chống Nước", desc: "Âm bass mạnh mẽ, pin 8h", price: "280.000đ", rawPrice: 280000, unit: "Loa", category: "Đồ Điện Tử", img: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500" },
+            { id: "SP19", name: "Webcam Full HD 1080p Micro Kép", desc: "Hỗ trợ học tập, họp trực tuyến", price: "390.000đ", rawPrice: 390000, unit: "Chiếc", category: "Đồ Điện Tử", img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500" },
+            { id: "SP20", name: "Thảm Tập Yoga Trải Sàn 6mm", desc: "Chống trượt đàn hồi tốt", price: "170.000đ", rawPrice: 170000, unit: "Tấm", category: "Đồ Thể Thao", img: "https://images.unsplash.com/photo-1601925260368-ae2f83cf297f?w=500" },
+            { id: "SP21", name: "Bộ Tạ Tay Thể Thao Điều Chỉnh", desc: "Chất liệu bọc cao su cao cấp", price: "450.000đ", rawPrice: 450000, unit: "Bộ", category: "Đồ Thể Thao", img: "https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?w=500" },
+            { id: "SP22", name: "Vợt Cầu Lông Carbon Khung Nhôm", desc: "Độ bền cao, trợ lực tốt", price: "340.000đ", rawPrice: 340000, unit: "Cây", category: "Đồ Thể Thao", img: "https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?w=500" },
+            { id: "SP23", name: "Gối Cao Su Non Massage Cổ Vai Gáy", desc: "Đàn hồi êm ái, ngủ ngon giấc", price: "260.000đ", rawPrice: 260000, unit: "Chiếc", category: "Đồ Gia Dụng", img: "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=500" },
+            { id: "SP24", name: "Hộp Đựng Giày Nhựa Trong Suốt", desc: "Chống bụi bám, xếp chồng gọn", price: "35.000đ", rawPrice: 35000, unit: "Hộp", category: "Đồ Gia Dụng", img: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500" },
+            { id: "SP25", name: "Nồi Chiên Không Dầu Điện Tử 5L", desc: "Công nghệ ráp khí nóng giảm mỡ", price: "1.250.000đ", rawPrice: 1250000, unit: "Nồi", category: "Đồ Gia Dụng", img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=500" },
+            { id: "SP26", name: "Máy Xay Sinh Tố Cầm Tay Mini", desc: "Sạc USB tiện lợi mang đi", price: "210.000đ", rawPrice: 210000, unit: "Máy", category: "Đồ Gia Dụng", img: "https://images.unsplash.com/photo-1570222094114-d02fcf42a7bc?w=500" },
+            { id: "SP27", name: "Áo Thun Unisex Cotton Form Rộng", desc: "Thấm hút mồ hôi, năng động", price: "120.000đ", rawPrice: 120000, unit: "Áo", category: "Đồ Thời Trang", img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500" },
+            { id: "SP28", name: "Mũ Lưỡi Trai Thêu Chữ Hàn Quốc", desc: "Phong cách trẻ trung cá tính", price: "85.000đ", rawPrice: 85000, unit: "Chiếc", category: "Đồ Thời Trang", img: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500" },
+            { id: "SP29", name: "Thắt Lưng Nam Da Bò Thật 100%", desc: "Khóa tự động hợp kim chống gỉ", price: "290.000đ", rawPrice: 290000, unit: "Sợi", category: "Đồ Phụ Kiện", img: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500" },
+            { id: "SP30", name: "Ví Da Nam Mini Nhỏ Gọn", desc: "Nhiều ngăn đựng thẻ tiện ích", price: "175.000đ", rawPrice: 175000, unit: "Cái", category: "Đồ Phụ Kiện", img: "https://images.unsplash.com/photo-1627123424574-724758594e93?w=500" },
+            { id: "SP31", name: "Sách Lập Trình Web Fullstack Từ A-Z", desc: "Tài liệu tự học lập trình thực chiến", price: "195.000đ", rawPrice: 195000, unit: "Cuốn", category: "Đồ Sách Vở", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500" },
+            { id: "SP32", name: "Bộ Giao Tiếp Mạng Router Wifi 6", desc: "Phát sóng tốc độ cao xuyên tường", price: "890.000đ", rawPrice: 890000, unit: "Bộ", category: "Đồ Điện Tử", img: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=500" }
+        ];
+
+        let currentCategory = "Tất cả";
+        let cartItems = [];
+
+        function initCategories() {
+            const categories = ["Tất cả", ...new Set(products.map(p => p.category))];
+            const filterBar = document.getElementById('categoryFilterBar');
+            filterBar.innerHTML = categories.map(cat => `
+                <button class="filter-btn ${cat === 'Tất cả' ? 'active' : ''}" onclick="selectCategory('${cat}', this)">${cat}</button>
+            `).join('');
+        }
+
+        function selectCategory(category, btnElement) {
+            currentCategory = category;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+            filterProducts();
+        }
+
+        function filterProducts() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase().trim();
+            const filtered = products.filter(p => {
+                const matchCategory = (currentCategory === "Tất cả" || p.category === currentCategory);
+                const matchKeyword = p.name.toLowerCase().includes(keyword) || 
+                                     p.id.toLowerCase().includes(keyword) || 
+                                     p.category.toLowerCase().includes(keyword);
+                return matchCategory && matchKeyword;
+            });
+            displayProducts(filtered);
+        }
+
+        function displayProducts(list) {
+            const grid = document.getElementById('productGrid');
+            document.getElementById('product-count').innerText = list.length;
+            
+            if (list.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #777;">Không tìm thấy sản phẩm phù hợp!</p>`;
+                return;
+            }
+
+            grid.innerHTML = list.map(p => `
+                <div class="product-card">
+                    <img src="${p.img}" alt="${p.name}" class="product-image">
+                    <div class="product-info">
+                        <div class="product-code">Mã: ${p.id}</div>
+                        <span class="product-category">${p.category}</span>
+                        <div class="product-name" title="${p.name}">${p.name}</div>
+                        <div class="product-desc" title="${p.desc}">${p.desc}</div>
+                        <div class="product-price-row">
+                            <span class="product-price">${p.price}</span>
+                            <span class="product-unit">ĐVT: ${p.unit}</span>
+                        </div>
+                        <button class="btn-add-cart" onclick="addToCart(event, '${p.id}')">Thêm Vào Xe</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(event, productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const btn = event.target;
+            const card = btn.closest('.product-card');
+            const imgElement = card.querySelector('.product-image');
+            const imgRect = imgElement.getBoundingClientRect();
+            const cartIcon = document.querySelector('.cart-container');
+            const cartRect = cartIcon.getBoundingClientRect();
+
+            const flyingImg = document.createElement('img');
+            flyingImg.src = product.img;
+            flyingImg.className = 'flying-item';
+            flyingImg.style.top = `${imgRect.top}px`;
+            flyingImg.style.left = `${imgRect.left}px`;
+            document.body.appendChild(flyingImg);
+
+            setTimeout(() => {
+                flyingImg.style.top = `${cartRect.top}px`;
+                flyingImg.style.left = `${cartRect.left}px`;
+                flyingImg.style.width = '20px';
+                flyingImg.style.height = '20px';
+                flyingImg.style.opacity = '0.3';
+            }, 30);
+
+            setTimeout(() => {
+                flyingImg.remove();
+                const existing = cartItems.find(item => item.id === productId);
+                if (existing) {
+                    existing.quantity += 1;
+                } else {
+                    cartItems.push({ ...product, quantity: 1 });
+                }
+                updateCartUI();
+                showToast(`Đã xếp "${product.name}" lên xe tải vận chuyển!`);
+            }, 850);
+        }
+
+        function updateCartUI() {
+            const totalCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').innerText = totalCount;
+            document.getElementById('cartModalTotalCount').innerText = totalCount;
+
+            const modalBody = document.getElementById('cartModalBody');
+            if (cartItems.length === 0) {
+                modalBody.innerHTML = `<p style="text-align: center; color: #777; padding: 20px;">Xe tải chưa có đơn hàng nào!</p>`;
+                return;
+            }
+
+            modalBody.innerHTML = cartItems.map(item => `
+                <div class="cart-item-row">
+                    <img src="${item.img}" class="cart-item-img" alt="${item.name}">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-price">${item.price} x ${item.quantity}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCartModal() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('active');
+        }
+
+        function checkout() {
+            if (cartItems.length === 0) {
+                alert("Xe tải đang trống!");
+                return;
+            }
+            alert("Xuất kho thành công! Xe tải đang khởi hành giao hàng.");
+            cartItems = [];
+            updateCartUI();
+            toggleCartModal();
+        }
+
+        function showToast(message) {
+            const oldToast = document.querySelector('.custom-toast');
+            if (oldToast) oldToast.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'custom-toast';
+            toast.innerHTML = `<i class="fa-solid fa-check-circle" style="color: #2ecc71; font-size: 18px;"></i> <span>${message}</span>`;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 2000);
+        }
+
+        initCategories();
+        displayProducts(products);
+    </script>
+</body>
+</html>
